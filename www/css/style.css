@@ -1,0 +1,22 @@
+
+/*///////////////////////////*/
+/*       CENTERING DIVS      */
+/*///////////////////////////*/
+
+.outer {
+  display: table;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.middle {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.inner {
+  margin: auto;
+text-align: center;
+
+}

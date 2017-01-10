@@ -1,0 +1,44 @@
+<script id="high-score.html" type="text/ng-template" ng-init="getScores()">
+  <ion-modal-view>
+    <ion-content>
+      <div style="width:100%; height:100%">
+
+        <div style="width:100%; height:25%">
+          <div class="outer">
+            <div class = "middle">
+              <div class = "inner">
+                <h1 style="color: #BC0610"> Stroop </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:100%; height:50%">
+          <table style="table-layout:fixed; width:80%; margin-left:10%; border-spacing: 10px;border-collapse: separate;">
+            <tr>
+              <td></td> <td> <h4> Highscores  </h4></td>
+            </tr>
+            <tr>
+              <td> <h4> Easy </h4> </td> <td> <h4> {{scores[0]}}  </h4></td>
+            </tr>
+            <tr>
+              <td> <h4> Medium </h4> </td> <td> <h4> {{scores[1]}}  </h4></td>
+            </tr>
+            <tr>
+              <td> <h4> Hard </h4> </td> <td> <h4> {{scores[2]}}  </h4></td>
+            </tr>
+          </table>
+          <h1 ng-click="resetScores()"> DELETE </h1>
+        </div>
+
+        <div style="width:100%; height:17%">
+        </div>
+
+        <div style="width:100%; height:10%; margin-left:5%">
+          <img ng-click="openHomeModal();" src='img/smallBackButton.jpg'>
+        </div>
+
+      </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>

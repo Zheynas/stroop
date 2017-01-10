@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title></title>
+
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <script src="lib/angular-local-storage/dist/angular-local-storage.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+
+  <!-- your app's js -->
+  <script src="js/app.js"></script>
+
+</head>
+<body ng-app="ionic-todo" ng-controller="main" ng-init="getScores()">
+  <ion-pane>
+    <ion-content>
+      <div style="width:100%;height:100%">
+
+        <div style="width:100%; height:25%">
+          <div class="outer">
+            <div class = "middle">
+              <div class = "inner">
+                <h1 style="color: #BC0610">Stroop</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:100%; height:60%">
+          <div class="outer">
+            <div class = "middle">
+              <div class = "inner">
+                <h4 ng-click="openChoices()" style="color: #607998">Play Game</h4>
+                <h4 style="color: #607998" ng-click="openTutorial()">Tutorial</h4>
+                <h4 style="color: #607998" ng-click="openHighscores()">High Scores</h4>
+                <h4 style="color: #607998" ng-click="openSettings()">Settings</h4>
+                <br>
+                <br>
+                <h4 style="color: #607998" ng-click="initializeScores()">Exit</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </ion-content>
+  </ion-pane>
+
+  <script id="gameChoices.html" type="text/ng-template">
+    <ion-modal-view>
+      <ion-content>
+        <div style="width:100%; height:100%">
+
+          <div style="width:100%; height:25%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <h1 style="color: #367CDB"> Stroop </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:10%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <img  ng-click="startEasyGame();" src='img/easyButton.png'>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:10%">
+            <h4 style="color: #00A20B; text-align:center"> 4 Colours, 1.5 seconds to guess </h4>
+          </div>
+
+          <div style="width:100%; height:10%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <img  ng-click="startMediumGame();" src='img/mediumButton.png'>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:10%">
+            <h4 style="color: #F6E2A0; text-align:center"> 6 Colours, 1.25 seconds to guess </h4>
+          </div>
+
+          <div style="width:100%; height:10%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <img  ng-click="startHardGame();" src='img/hardButton.png'>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:15%">
+            <h4 style="color: #D12925; text-align:center"> 9 Colours, 1 second to guess </h4>
+          </div>
+
+          <div style="width:90%; margin-left:5%; height:10%">
+            <img ng-click="openHomeModal();" src='img/smallBackButton.jpg'>
+          </div>
+
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="easyGame.html" type="text/ng-template">
+    <ion-modal-view>
+      <ion-content>
+        <div style="height: 100%; width:100%">
+
+          <div style="height:60%; width:100%">
+
+            <div style="height:30%; width:100%">
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+                    <br>
+                    <h3>{{playerScore}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="colourWrapper" style="height:70%; width:100%">
+
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+
+                    <div ng-show="startGameModal">
+                      <h1 ng-click="startGame()" style="color: #367CDB">Start</h1>
+                    </div>
+
+                    <div ng-show="gameText">
+                      <h1 id="mainText">{{textText}}</h1>
+                    </div>
+
+                    <div ng-show="endGameText">
+                      <h4> Game over </h4>
+                      <h4> Your score was {{playerScore}} </h4>
+                      <h4> <a ng-click="startEasyGame()" style="strong" > Play Again </a>  <a ng-click="openHomeModal()" style="margin-left:10%"> Exit </a> </h4>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div style="height:40%; width:100%" ng-show="gameText">
+              <div style="margin-left:15%;height:80%">
+                <table style="border-spacing: 10px;border-collapse: separate;">
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[0].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[0].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[1].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[1].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[2].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[2].colour)"/> </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="mediumGame.html" type="text/ng-template">
+    <ion-modal-view>
+      <ion-content>
+        <div style="height: 100%; width:100%">
+
+          <div style="height:60%; width:100%">
+
+            <div style="height:30%; width:100%">
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+                    <br>
+                    <h3>{{playerScore}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="colourWrapper" style="height:70%; width:100%">
+
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+
+                    <div ng-show="startGameModal">
+                      <h1 ng-click="startGame()" style="color: #367CDB">Start</h1>
+                    </div>
+
+                    <div ng-show="gameText">
+                      <h1 id="mainText">{{textText}}</h1>
+                    </div>
+
+                    <div ng-show="endGameText">
+                      <h4> Game over </h4>
+                      <h4> Your score was {{playerScore}} </h4>
+                      <h4> <a ng-click="startMediumGame()" style="strong" > Play Again </a>  <a ng-click="openHomeModal()" style="margin-left:10%"> Exit </a> </h4>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div style="height:40%; width:100%" ng-show="gameText">
+              <div style="margin-left:15%;height:80%">
+                <table style="border-spacing: 10px;border-collapse: separate;">
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[0].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[0].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[1].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[1].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[2].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[2].colour)"/> </td>
+                  </tr>
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[3].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[3].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[4].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[4].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[5].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[5].colour)"/> </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="hardGame.html" type="text/ng-template">
+    <ion-modal-view>
+      <ion-content>
+        <div style="height: 100%; width:100%">
+
+          <div style="height:60%; width:100%">
+
+            <div style="height:30%; width:100%">
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+                    <br>
+                    <h3>{{playerScore}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="colourWrapper" style="height:70%; width:100%">
+
+              <div class="outer">
+                <div class = "middle">
+                  <div class = "inner">
+
+                    <div ng-show="startGameModal">
+                      <h1 ng-click="startGame()" style="color: #367CDB">Start</h1>
+                    </div>
+
+                    <div ng-show="gameText">
+                      <h1 id="mainText">{{textText}}</h1>
+                    </div>
+
+                    <div ng-show="endGameText">
+                      <h4> Game over </h4>
+                      <h4> Your score was {{playerScore}} </h4>
+                      <h4> <a ng-click="startHardGame()" style="strong" > Play Again </a>  <a ng-click="openHomeModal()" style="margin-left:10%"> Exit </a> </h4>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div style="height:40%; width:100%" ng-show="gameText">
+              <div style="margin-left:15%;height:80%">
+                <table style="border-spacing: 10px;border-collapse: separate;">
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[0].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[0].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[1].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[1].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[2].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[2].colour)"/> </td>
+                  </tr>
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[3].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[3].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[4].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[4].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[5].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[5].colour)"/> </td>
+                  </tr>
+                  <tr>
+                    <td> <img ng-src="{{colourSelection[6].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[6].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[7].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[7].colour)"/> </td>
+                    <td> <img ng-src="{{colourSelection[8].src}}"style="width:60%;height:60%" ng-click="selectedColour(colourSelection[8].colour)"/> </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="tutorial.html" type="text/ng-template" >
+    <ion-modal-view>
+      <ion-content>
+        <div style="width:100%; height:100%">
+
+          <div style="width:100%; height:25%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <h1 style="color: #9A00FF"> Stroop </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:90%; margin-left:5%; height:25%">
+            <p> To score points, you have to press the colour button</p>
+            <p> that corresponds to the colour that the word is </p>
+            <p> written in, not what the word says. For example, the </p>
+            <p> word below is the colour green, so you would have </p>
+            <p> to press the green button </p>
+          </div>
+
+          <div style="width:100%; height:25%; ">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner" >
+                  <img src="img/tutorialPic.png">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:90%; margin-left:5%; height:30%">
+            <p> But be careful, there is only a small amount of time </p>
+            <p> to choose the right button! Press the qrong one, </p>
+            <p> and the game ends there. On higher difficulty levels, </p>
+            <p> more colours are added, and you have even less </p>
+            <p> time to press. Have fun! </p>
+            <img  ng-click="openHomeModal();" src='img/smallBackButton.jpg'>
+          </div>
+
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="settings.html" type="text/ng-template" >
+    <ion-modal-view>
+      <ion-content>
+        <div style="width:100%; height:100%">
+
+          <div style="width:100%; height:25%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <h1 style="color: #AE6427">Stroop</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:35%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <table style= "table-layout:fixed; width:80%; margin-left:10%; border-spacing: 10px;border-collapse: separate;">
+                    <tr>
+                      <td> <h4 ng-click="toggleMusic()" style="color: #367CDB"> Music </h4> </td>
+                      <td> <h4 ng-click="toggleMusic()" style="color: #367CDB"> {{musicStatus}} </h4> </td>
+                    </tr>
+                    <tr>
+                      <td> <h4 ng-click="toggleSound()" style="color: #367CDB"> Sound Effects </h4> </td>
+                      <td> <h4 ng-click="toggleSound()" style="color: #367CDB"> {{soundStatus}} </h4> </td>
+                    </tr>
+                    <tr>
+                      <td> <h4 ng-click="toggleChaos()" style="color: #367CDB"> Chaos </h4> </td>
+                      <td> <h4 ng-click="toggleChaos()" style="color: #367CDB"> {{chaosStatus}} </h4> </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:32%">
+          </div>
+          <div style="width:100%; height:10%; margin-left:5%">
+            <img ng-click="openHomeModal();" src='img/smallBackButton.jpg'>
+          </div>
+
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+  <script id="high-score.html" type="text/ng-template">
+    <ion-modal-view>
+      <ion-content>
+
+        <div style="width:100%; height:100%">
+
+          <div style="width:100%; height:25%">
+            <div class="outer">
+              <div class = "middle">
+                <div class = "inner">
+                  <h1 style="color: #FE9900"> Stroop </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:100%; height:50%">
+            <table style="table-layout:fixed; width:80%; margin-left:10%; border-spacing: 10px;border-collapse: separate;">
+              <tr>
+                <td></td> <td> <h4> Highscores  </h4></td>
+              </tr>
+              <tr>
+                <td> <h4> Easy </h4> </td> <td> <h4> {{scores[0]}}  </h4></td>
+              </tr>
+              <tr>
+                <td> <h4> Medium </h4> </td> <td> <h4> {{scores[1]}}  </h4></td>
+              </tr>
+              <tr>
+                <td> <h4> Hard </h4> </td> <td> <h4> {{scores[2]}}  </h4></td>
+              </tr>
+            </table>
+            <!-- <h1 ng-click="resetScores()"> DELETE </h1> -->
+          </div>
+
+          <div style="width:100%; height:17%">
+          </div>
+
+          <div style="width:100%; height:10%; margin-left:5%">
+            <img ng-click="openHomeModal();" src='img/smallBackButton.jpg'>
+          </div>
+
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
+
+</body>
+</html>
