@@ -9,4 +9,4 @@
 <h3> To Do </h3>
 <p> * Add music and sound -- add ability to mute them </p>
 <p> * Seperate javascript and html into files </p>
-<p> * Design tweaks </p>
+<p> * Design tweaks - move styling to css file </p>
