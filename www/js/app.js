@@ -1,4 +1,4 @@
-var app = angular.module('ionic-todo', ['ionic', 'LocalStorageModule']);
+var app = angular.module('stroop', ['ionic', 'LocalStorageModule']);
 
 app.run(function ($ionicPlatform) {
   $ionicPlatform.ready(function () {
@@ -21,7 +21,7 @@ app.run(function ($ionicPlatform) {
 // Local storage setup
 app.config(function (localStorageServiceProvider) {
   localStorageServiceProvider
-  .setPrefix('ionic-todo')
+  .setPrefix('stroop')
 });
 
 // Main controller

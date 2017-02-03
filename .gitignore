@@ -4,3 +4,4 @@ plugins/
 .idea/
 .editorconfig
 www/lib/
+bower_components/
